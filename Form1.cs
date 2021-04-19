@@ -23,48 +23,80 @@ namespace LogischerStringParser
 			// A & (B | C) & (D | E)
 			// A&B&D|A&B&E|A&C&D|A&C&E
 
-			//Regex regexVertBar = new Regex(@"\b\|\b");
-			string chSplitter;
-			string test = AusdruckTextBox.Text;
-			string[] striMergeColl = new string[5];
-			string[] merger = new string[4];
-			char[] chTB = AusdruckTextBox.Text.ToCharArray();
-			bool regswitch = true;
-			//Match mPlus, mMinus, mCheck;
+			string charSplitter; //für lesbarkeit. Enthählt immer den i'sten Char aus der textbox nachdem man den Button drückt.
+			string A, B, C, D, E; //Kürzel. Der wert enspricht alle strings aus einer liste, pro buchstabe.
+
+			char[] charTB = AusdruckTextBox.Text.ToCharArray(); //Teilt einen string der in die textbox eingegeben wird in alle characters auf und speichert diese in einem array
+
+			List<string> mergeListA = new List<string>(); //Lists die einzelne chars als wert hinzugefügt bekommt
+			List<string> mergeListB = new List<string>();
+			List<string> mergeListC = new List<string>();
+			List<string> mergeListD = new List<string>();
+			List<string> mergeListE = new List<string>();
+
+			bool vertBarBool = false; //Wenn ein "|" in charsplitter übergeben wird, wird dieser bool true gesetzt. Wird eine Klammer beendet, wird dieser bool false gesetzt
+			bool klammerBool = false; //Bleibt true solange man sich in einer klammer befindet.
+			bool switchBool = false; //Wird true gesetzt nachdem die erste klammer beendet wurde.
+			bool initialBool = true; //Wird false gesetzt nachdem der erste "wert" in der textbox in eine liste hinzugefügt wird
 
 
 
-			for (int i = 0; i <= 12; i++)
+			for (int i = 0; i <= (charTB.Length - 1); i++) //geht so oft durch wie die länge des char arrays. Hier wird im jedem durchlauf ein char zu einer der listen hinzugefügt
 			{
-				chSplitter = chTB[i].ToString();
-				//mCheck = regexVertBar.Match(chParser, 1);
-				//label1.Text = mCheck.Value;
-				if (chSplitter == "|")
-				//if (regexVertBar.Match(chParser, 1).Success)
+				charSplitter = charTB[i].ToString();
+
+				if (charSplitter == ")")
 				{
-					if (regswitch == true)
+					klammerBool = false;
+					switchBool = true;
+					vertBarBool = false;
+				}
+				if (charSplitter == "|")
+				{
+					vertBarBool = true;
+				}
+				else
+				{
+					if (klammerBool && !vertBarBool)
 					{
-						striMergeColl[1] = chTB[i - 1].ToString();
-						striMergeColl[2] = chTB[i + 1].ToString();
-						regswitch = false;
+						if (!switchBool) 
+							mergeListB.Add(charSplitter);	//Wenn in klammer 1, added die werte die vor dem "|" stehen
+						if (switchBool)
+							mergeListD.Add(charSplitter);	//Wenn in klammer 2, added die werte die vor dem "|" stehen
 					}
-					else
+					else if (klammerBool && vertBarBool)
 					{
-						striMergeColl[3] = chTB[i - 1].ToString();
-						striMergeColl[4] = chTB[i + 1].ToString();
-						regswitch = true;
+						if (!switchBool)
+							mergeListC.Add(charSplitter);	//Wenn in klammer 1, added die werte die nach dem "|" stehen
+						if (switchBool)
+							mergeListE.Add(charSplitter);	//Wenn in klammer 2, added die werte die nach dem "|" stehen
 					}
+				}
+
+				if (charSplitter == "(")
+				{
+					klammerBool = true;
+					initialBool = false;
+				}
+				else if (initialBool && charSplitter != "&") //Hier werden die Werte vor der Klammer in eine liste gepackt
+				{
+					mergeListA.Add(charSplitter);
 				}
 			}
 
-			merger[0] = chTB[0] + "&" + striMergeColl[1] + "&" + striMergeColl[3] + " ";
-			merger[1] = chTB[0] + "&" + striMergeColl[1] + "&" + striMergeColl[4] + " ";
-			merger[2] = chTB[0] + "&" + striMergeColl[2] + "&" + striMergeColl[3] + " ";
-			merger[3] = chTB[0] + "&" + striMergeColl[2] + "&" + striMergeColl[4] + " ";
-			label1.Text = string.Join("", merger);
+			A = string.Join("", mergeListA); //Fügt alle string/chars in dieser list zusammen zu einem string
+			B = string.Join("", mergeListB);
+			C = string.Join("", mergeListC);
+			D = string.Join("", mergeListD);
+			E = string.Join("", mergeListE);
 
+			// A&B&D|A&B&E|A&C&D|A&C&E
 
+			ergLabel.UseMnemonic = false; //UseMnemonic wird false gesetzt weil ein label sonst "&" nicht anzeigt.
+			ergLabel.Text = A + "&" + B + "&" + D + " " + A + "&" + B + "&" + E + " " + A + "&" + C + "&" + D + " " + A + "&" + C + "&" + E + " "; //fügt die strings passend zusammen. 
+			
 		}
 	}
 }
+
 
