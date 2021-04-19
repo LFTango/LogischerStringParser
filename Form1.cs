@@ -93,7 +93,7 @@ namespace LogischerStringParser
 			// A&B&D|A&B&E|A&C&D|A&C&E
 
 			ergLabel.UseMnemonic = false; //UseMnemonic wird false gesetzt weil ein label sonst "&" nicht anzeigt.
-			ergLabel.Text = A + "&" + B + "&" + D + " " + A + "&" + B + "&" + E + " " + A + "&" + C + "&" + D + " " + A + "&" + C + "&" + E + " "; //fügt die strings passend zusammen. 
+			ergLabel.Text = A + "&" + B + "&" + D + " | " + A + "&" + B + "&" + E + " | " + A + "&" + C + "&" + D + " | " + A + "&" + C + "&" + E + " "; //fügt die strings passend zusammen. 
 			
 		}
 	}
